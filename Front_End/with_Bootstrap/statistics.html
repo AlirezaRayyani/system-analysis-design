@@ -1,45 +1,58 @@
 <!doctype html>
 <html lang="fa" dir="rtl">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>آمار و گزارش‌ها | آوند سنتر</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>آمار و گزارش‌ها | آوندسنتر</title>
 
+    <!-- Bootstrap 5 RTL -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css">
     <!-- فونت وزیر -->
-    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.0.0/Vazirmatn-font-face.css" rel="stylesheet" />
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v18.0.0/dist/font-face.css">
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
     <style>
         :root {
-            --bg-color: #121212;
+            --bg: #121212;
             --surface: #1e1e1e;
-            --card-bg: rgba(255, 255, 255, 0.04);
             --text: #ffffff;
-            --text-muted: #aaaaaa;
-            --border: #333;
+            --muted: #a0a0a0;
             --primary: #ff7a00;
             --primary-hover: #e06b00;
-            --red: #f44336;
-            --green: #4caf50;
+            --green: #28a745;
+            --red: #dc3545;
             --blue: #2196f3;
-            --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-            --sidebar-bg: rgba(30, 30, 30, 0.8);
-            --transition: 0.6s ease;
-            --radius: 16px;
+            --border: #333333;
+            --card-bg: rgba(255,255,255,0.03);
+            --logo-gradient: linear-gradient(135deg, #ffffff 0%, #cccccc 100%);
+            --sidebar-bg: #1a1a1a;
+            --shadow: 0 4px 20px rgba(0,0,0,0.3);
         }
 
         body.light-mode {
-            --bg-color: #f5f5f7;
+            --bg: #f5f5f7;
             --surface: #ffffff;
-            --card-bg: rgba(255, 255, 255, 0.6);
             --text: #1d1d1f;
-            --text-muted: #6e6e73;
+            --muted: #6e6e73;
+            --primary: #ff7a00;
+            --primary-hover: #e06b00;
+            --green: #28a745;
+            --red: #dc3545;
+            --blue: #2196f3;
             --border: #e0e0e0;
-            --shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
-            --sidebar-bg: rgba(255, 255, 255, 0.6);
+            --card-bg: rgba(0,0,0,0.02);
+            --logo-gradient: linear-gradient(135deg, #1d1d1f 0%, #4a4a4f 100%);
+            --sidebar-bg: #ffffff;
+            --shadow: 0 4px 20px rgba(0,0,0,0.05);
+        }
+
+        html, body {
+            overflow-x: hidden !important;
+            width: 100%;
+            max-width: 100vw;
         }
 
         * {
@@ -49,238 +62,330 @@
         }
 
         body {
-            font-family: 'Vazirmatn', 'Vazir', sans-serif;
-            background-color: var(--bg-color);
+            font-family: 'Vazir', sans-serif;
+            background-color: var(--bg);
             color: var(--text);
+            transition: background-color 0.7s ease, color 0.7s ease;
             display: flex;
             min-height: 100vh;
-            transition: background var(--transition), color var(--transition);
-            position: relative;
+        }
+
+        a {
+            text-decoration: none;
+            color: var(--primary);
+        }
+
+        .text-orange { color: var(--primary); }
+        .text-green { color: var(--green); }
+        .text-red { color: var(--red); }
+        .text-blue { color: var(--blue); }
+
+        .dashboard-wrapper {
+            display: flex;
+            width: 100%;
+            max-width: 100vw;
             overflow-x: hidden;
         }
 
-        /* دکمه تغییر تم - بالا سمت چپ */
-        .theme-toggle {
-            position: fixed;
-            top: 1.5rem;
-            left: 1.5rem;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: var(--surface);
-            border: 1px solid var(--border);
-            box-shadow: var(--shadow);
-            font-size: 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 1100; /*بالاتر از همه*/
-            transition: transform 0.3s, background 0.3s, box-shadow 0.3s;
-        }
-        .theme-toggle:hover {
-            transform: scale(1.1);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.5);
-        }
-
-        /* لوگو ثابت - بالا سمت راست */
-        .logo-fixed {
-            position: fixed;
-            top: 1.5rem;
-            right: 1.5rem;
-            font-size: 1.6rem;
-            font-weight: 900;
-            color: var(--primary);
-            text-decoration: none;
-            z-index: 1100;
-            letter-spacing: -0.5px;
-        }
-
-        /* سایدبار */
         .sidebar {
-            width: 280px;
-            background: var(--sidebar-bg);
-            backdrop-filter: blur(12px);
+            width: 260px;
+            background-color: var(--sidebar-bg);
             border-left: 1px solid var(--border);
+            padding: 2rem 1rem;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
-            padding: 75px 15px;
-            transition: right 0.4s ease, background var(--transition);
-            position: relative;
-            z-index: 10;
+            transition: transform 0.3s ease;
+            z-index: 100;
         }
 
-        .menu ul {
-            list-style: none;
-        }
-        .menu ul li {
-            margin-bottom: 10px;
-        }
-        .menu ul li a {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px 16px;
-            border-radius: 12px;
-            color: var(--text);
-            text-decoration: none;
-            font-size: 1rem;
-            transition: all 0.3s;
-        }
-        .menu ul li a:hover {
-            background: rgba(255, 122, 0, 0.15);
-            transform: translateX(-5px);
-        }
-        .menu ul li a.active {
-            background: var(--primary);
-            color: #fff;
-            font-weight: 600;
-            box-shadow: 0 4px 12px rgba(255, 122, 0, 0.4);
+        .sidebar-logo {
+            text-align: center;
+            margin-bottom: 3rem;
         }
 
-        .logout {
-            width: 100%;
-            padding: 12px;
-            background: transparent;
-            border: 1px solid var(--red);
-            color: var(--red);
-            border-radius: 12px;
-            font-family: inherit;
-            font-size: 1rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .logout:hover {
-            background: var(--red);
-            color: #fff;
-        }
-
-        /* محتوا */
-        .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            padding: 30px;
-            overflow-y: auto;
-        }
-
-        .top-header {
-            margin-top: 2.5rem;
-            margin-bottom: 30px;
-        }
-        .top-header h1 {
-            font-size: 2rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, var(--text), var(--text-muted));
+        .sidebar-logo a {
+            font-size: 1.8rem;
+            font-weight: 900;
+            background: var(--logo-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
-            padding-right: 160px;
         }
 
-        /* کارت‌های خلاصه */
-        .summary-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-bottom: 30px;
+        .sidebar-menu {
+            list-style: none;
+            flex-grow: 1;
         }
 
-        .stat-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(12px);
-            border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 25px 20px;
-            box-shadow: var(--shadow);
+        .sidebar-menu li {
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-menu a {
             display: flex;
             align-items: center;
-            gap: 15px;
-            border-right: 4px solid transparent;
-            transition: transform 0.3s;
+            gap: 0.8rem;
+            color: var(--text);
+            padding: 0.8rem 1rem;
+            border-radius: 8px;
+            transition: all 0.3s;
+            font-weight: 500;
         }
-        .stat-card:hover {
-            transform: translateY(-3px);
+
+        .sidebar-menu a:hover,
+        .sidebar-menu a.active {
+            background-color: rgba(255, 122, 0, 0.1);
+            color: var(--primary);
         }
-        .stat-card.income {
-            border-color: var(--green);
-        }
-        .stat-card.expense {
-            border-color: var(--red);
-        }
-        .stat-card.balance {
-            border-color: var(--blue);
-        }
-        .stat-card .icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 20px;
-        }
-        .stat-card.income .icon {
-            background: rgba(76, 175, 80, 0.15);
-            color: var(--green);
-        }
-        .stat-card.expense .icon {
-            background: rgba(244, 67, 54, 0.15);
+
+        .sidebar-menu a.logout:hover {
+            background-color: rgba(220, 53, 69, 0.1);
             color: var(--red);
         }
-        .stat-card.balance .icon {
-            background: rgba(33, 150, 243, 0.15);
-            color: var(--blue);
+
+        .main-content {
+            flex-grow: 1;
+            padding: 2rem;
+            overflow-y: auto;
+            overflow-x: hidden;
+            background-color: var(--bg);
+            max-width: 100%;
         }
-        .stat-card .details h3 {
+
+        .top-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .greeting h2 {
+            font-size: 1.5rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .greeting p {
+            color: var(--muted);
             font-size: 0.9rem;
-            color: var(--text-muted);
-            margin-bottom: 5px;
         }
-        .stat-card .details .amount {
-            font-size: 1.4rem;
-            font-weight: 700;
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .btn-orange {
+            background-color: var(--primary);
+            color: #fff;
+            border: none;
+            padding: 0.7rem 1.5rem;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+        }
+
+        .btn-orange:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255,122,0,0.3);
+        }
+
+        .theme-toggle-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 50%;
+            transition: all 0.3s;
+            background: var(--card-bg);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .theme-toggle-btn:hover {
+            background: rgba(128,128,128,0.2);
+        }
+
+        .theme-toggle-mobile {
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 2000;
+            display: none;
+            background: var(--surface);
+            padding: 0.5rem;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            align-items: center;
+            justify-content: center;
             color: var(--text);
         }
 
-        /* بخش نمودارها */
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background-color: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s;
+            min-width: 0;
+            border-right: 4px solid transparent;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card.income {
+            border-right-color: var(--green);
+        }
+        .stat-card.expense {
+            border-right-color: var(--red);
+        }
+        .stat-card.balance {
+            border-right-color: var(--blue);
+        }
+
+        .stat-icon {
+            width: IIIpx;
+            height: 55px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .stat-card.income .stat-icon {
+            background-color: rgba(40,167,69,0.1);
+            color: var(--green);
+        }
+        .stat-card.expense .stat-icon {
+            background-color: rgba(220,53,69,0.1);
+            color: var(--red);
+        }
+        .stat-card.balance .stat-icon {
+            background-color: rgba(33,150,243,0.1);
+            color: var(--blue);
+        }
+
+        .stat-info h3 {
+            font-size: 0.85rem;
+            color: var(--muted);
+            margin-bottom: 0.3rem;
+        }
+
+        .stat-info .amount {
+            font-size: 1.4rem;
+            font-weight: bold;
+        }
+
         .charts-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 30px;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
         }
 
-        .chart-card {
-            background: var(--card-bg);
-            backdrop-filter: blur(12px);
+        .dashboard-box {
+            background-color: var(--surface);
             border: 1px solid var(--border);
-            border-radius: var(--radius);
-            padding: 25px;
+            border-radius: 16px;
+            padding: 1.5rem;
             box-shadow: var(--shadow);
+            min-width: 0;
+            overflow: hidden;
         }
-        .chart-card h2 {
-            font-size: 1.2rem;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
+
+        .box-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.8rem;
             border-bottom: 1px solid var(--border);
         }
-        .chart-container {
-            width: 100%;
-            height: 300px;
-            position: relative;
-        }
-        canvas {
-            width: 100% !important;
-            height: 100% !important;
+
+        .box-header h3 {
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
-        /* Toast */
+        .box-header a {
+            font-size: 0.8rem;
+        }
+
+        .chart-container {
+            width: 100%;
+            height: 280px;
+            position: relative;
+            max-width: 100%;
+            overflow: hidden;
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 2rem;
+            left: 2rem;
+            width: 3rem;
+            height: 3rem;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            font-size: 1.4rem;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            z-index: 999;
+            box-shadow: 0 4px 15px rgba(255,122,0,0.4);
+        }
+
+        .back-to-top.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .sidebar-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            color: var(--text);
+            cursor: pointer;
+        }
+
         .toast {
             position: fixed;
             bottom: 2rem;
@@ -295,334 +400,444 @@
             animation: slideIn 0.3s ease;
             display: none;
         }
+
         @keyframes slideIn {
             from { transform: translateY(30px); opacity: 0; }
             to   { transform: translateY(0); opacity: 1; }
         }
 
-        /* منوی همبرگری */
-        .menu-toggle {
-            display: none;
-            background: none;
-            border: none;
-            color: var(--text);
-            font-size: 2rem;
-            cursor: pointer;
-            position: fixed;
-            top: 1.2rem;
-            left: 1.5rem;
-            z-index: 1200;  /* بالاترین */
-            width: 48px;
-            height: 48px;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* حالت موبایل */
-        @media (max-width: 900px) {
-            .menu-toggle {
-                display: flex;
-            }
-            .theme-toggle {
-                left: 5rem;  /* کنار همبرگری */
-            }
-            .sidebar {
-                position: fixed;
-                right: -100%;
-                top: 0;
-                bottom: 0;
-                width: 280px;
-                z-index: 1050;
-                transition: right 0.4s ease;
-            }
-            .sidebar.open {
-                right: 0;
-            }
-            .sidebar-backdrop {
-                position: fixed;
-                inset: 0;
-                background: rgba(0, 0, 0, 0.5);
-                z-index: 1040;
-                display: none;
-            }
-            .sidebar.open ~ .sidebar-backdrop {
-                display: block;
-            }
-            .main-content {
-                padding: 80px 20px 30px;
-            }
-            .top-header h1 {
-                padding-right: 80px;
-            }
+        /* ==== تغییرات اصلی برای موبایل ==== */
+        @media (max-width: 992px) {
             .charts-grid {
                 grid-template-columns: 1fr;
+            }
+            
+            .chart-container {
+                height: 250px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-wrapper {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                position: fixed;
+                top: 0;
+                right: 0;
+                height: 100vh;
+                transform: translateX(100%);
+                padding-top: 4rem;
+                width: 260px;
+                box-shadow: -5px 0 15px rgba(0,0,0,0.2);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .sidebar-toggle {
+                display: block;
+                position: fixed;
+                top: 1rem;
+                right: 1rem;
+                z-index: 2000;
+                background: var(--surface);
+                padding: 0.5rem;
+                border-radius: 8px;
+                box-shadow: var(--shadow);
+            }
+
+            .theme-toggle-mobile {
+                display: flex;
+            }
+
+            .header-actions .theme-toggle-btn {
+                display: none;
+            }
+
+            .main-content {
+                padding: 1rem;
+                margin-top: 4rem;
+                width: 100%;
+                max-width: 100vw;
+            }
+
+            .top-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .summary-cards {
+                grid-template-columns: 1fr;
+            }
+            
+            .dashboard-box {
+                width: 100%;
+                max-width: 100%;
+                overflow-x: auto;
+            }
+            
+            .chart-container {
+                width: 100%;
+                max-width: 100%;
+                overflow: hidden;
+            }
+            
+            /* اطمینان از عدم اسکرول افقی کلی صفحه */
+            .main-content {
+                overflow-x: hidden;
             }
         }
     </style>
 </head>
 <body>
-    <!-- دکمه تغییر تم - بالا سمت چپ -->
-    <button class="theme-toggle" id="themeToggle" aria-label="تغییر تم">🌙</button>
 
-    <!-- لوگو ثابت بالا سمت راست -->
-    <a href="index.html" class="logo-fixed">آوند سنتر</a>
+    <button class="sidebar-toggle" id="sidebarToggle" title="منو">
+        <i class="fas fa-bars"></i>
+    </button>
 
-    <!-- دکمه همبرگری موبایل -->
-    <button class="menu-toggle" id="menuToggle" aria-label="منو">☰</button>
+    <button class="theme-toggle-mobile" id="themeToggleMobile" title="تغییر تم"></button>
 
-    <!-- سایدبار -->
-    <aside class="sidebar" id="sidebar">
-        <div>
-            <nav class="menu">
-                <ul>
-                    <li><a href="dashboard.html"><i class="fa fa-home"></i> داشبورد</a></li>
-                    <li><a href="transactions.html"><i class="fa fa-list"></i> تراکنش‌ها</a></li>
-                    <li><a href="statistics.html" class="active"><i class="fa fa-chart-pie"></i> آمار و گزارش‌ها</a></li>
-                    <li><a href="profile.html"><i class="fa fa-user"></i> پروفایل</a></li>
-                </ul>
-            </nav>
-        </div>
-        <button class="logout" id="logoutBtn"><i class="fa fa-sign-out-alt"></i> خروج از حساب</button>
-    </aside>
-    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
-
-    <!-- محتوای اصلی -->
-    <main class="main-content">
-        <header class="top-header">
-            <h1>آمار و گزارش‌ها</h1>
-        </header>
-
-        <!-- کارت‌های خلاصه -->
-        <div class="summary-cards">
-            <div class="stat-card income">
-                <div class="icon"><i class="fa fa-arrow-up"></i></div>
-                <div class="details">
-                    <h3>کل درآمد این ماه</h3>
-                    <p class="amount">۱۲,۵۰۰,۰۰۰ تومان</p>
-                </div>
+    <div class="dashboard-wrapper">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-logo">
+                <a href="index.html">آوندسنتر</a>
             </div>
-            <div class="stat-card expense">
-                <div class="icon"><i class="fa fa-arrow-down"></i></div>
-                <div class="details">
-                    <h3>کل هزینه‌های این ماه</h3>
-                    <p class="amount">۴,۲۰۰,۰۰۰ تومان</p>
-                </div>
-            </div>
-            <div class="stat-card balance">
-                <div class="icon"><i class="fa fa-wallet"></i></div>
-                <div class="details">
-                    <h3>موجودی خالص</h3>
-                    <p class="amount">۸,۳۰۰,۰۰۰ تومان</p>
-                </div>
-            </div>
-        </div>
+            <ul class="sidebar-menu">
+                <li><a href="dashboard.html"><i class="fas fa-home"></i> داشبورد</a></li>
+                <li><a href="transactions.html"><i class="fas fa-list"></i> تراکنش‌ها</a></li>
+                <li><a href="#" class="active"><i class="fas fa-chart-pie"></i> آمار و گزارش‌ها</a></li>
+                <li><a href="profile.html"><i class="fas fa-user-cog"></i> پروفایل و امنیت</a></li>
+                <li><a href="#" class="logout" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> خروج</a></li>
+            </ul>
+        </aside>
 
-        <!-- نمودارها -->
-        <div class="charts-grid">
-            <div class="chart-card">
-                <h2>روند مالی (۶ ماه گذشته)</h2>
-                <div class="chart-container">
-                    <canvas id="trendChart"></canvas>
+        <main class="main-content">
+            <header class="top-header">
+                <div class="greeting">
+                    <h2>آمار و گزارش‌ها <i class="fas fa-chart-line"></i></h2>
+                    <p>تحلیل جامع وضعیت مالی و گزارش‌های آماری</p>
                 </div>
-            </div>
-            <div class="chart-card">
-                <h2>دسته‌بندی هزینه‌ها</h2>
-                <div class="chart-container">
-                    <canvas id="categoryChart"></canvas>
+                <div class="header-actions">
+                    <button class="btn-orange"><i class="fas fa-download"></i> خروجی گزارش</button>
+                    <button class="theme-toggle-btn" id="themeToggleDesktop" title="تغییر تم"></button>
                 </div>
-            </div>
-        </div>
-    </main>
+            </header>
 
-    <!-- Toast -->
+            <!-- کارت‌های خلاصه -->
+            <section class="summary-cards">
+                <div class="stat-card income">
+                    <div class="stat-icon"><i class="fas fa-arrow-up"></i></div>
+                    <div class="stat-info">
+                        <h3>کل درآمد این ماه</h3>
+                        <p class="amount text-green">۱۲,۵۰۰,۰۰۰ تومان</p>
+                    </div>
+                </div>
+                <div class="stat-card expense">
+                    <div class="stat-icon"><i class="fas fa-arrow-down"></i></div>
+                    <div class="stat-info">
+                        <h3>کل هزینه‌های این ماه</h3>
+                        <p class="amount text-red">۴,۲۰۰,۰۰۰ تومان</p>
+                    </div>
+                </div>
+                <div class="stat-card balance">
+                    <div class="stat-icon"><i class="fas fa-wallet"></i></div>
+                    <div class="stat-info">
+                        <h3>موجودی خالص</h3>
+                        <p class="amount text-blue">۸,۳۰۰,۰۰۰ تومان</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- نمودارها -->
+            <section class="charts-grid">
+                <div class="dashboard-box">
+                    <div class="box-header">
+                        <h3><i class="fas fa-chart-line"></i> روند مالی (۶ ماه گذشته)</h3>
+                        <a href="#">جزئیات بیشتر</a>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="trendChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="dashboard-box">
+                    <div class="box-header">
+                        <h3><i class="fas fa-chart-pie"></i> دسته‌بندی هزینه‌ها</h3>
+                        <a href="#">جزئیات بیشتر</a>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="categoryChart"></canvas>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <button class="back-to-top" id="backToTop" title="بازگشت به بالا">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
     <div class="toast" id="toast">پیام</div>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
     <script>
-        // ========== اجرای همه چیز بعد از آماده شدن کامل DOM ==========
-        document.addEventListener('DOMContentLoaded', () => {
-            // ========== ارجاع‌ها ==========
-            const body = document.body;
-            const themeToggle = document.getElementById('themeToggle');
-            const menuToggle = document.getElementById('menuToggle');
-            const sidebar = document.getElementById('sidebar');
-            const backdrop = document.getElementById('sidebarBackdrop');
-            const logoutBtn = document.getElementById('logoutBtn');
+        // ==================== متغیرها و توابع مشترک ====================
+        const body = document.body;
+        const themeToggleDesktop = document.getElementById('themeToggleDesktop');
+        const themeToggleMobile = document.getElementById('themeToggleMobile');
+        const savedTheme = localStorage.getItem('theme');
+        let trendChart = null;
+        let categoryChart = null;
 
-            // ========== تنظیم تم ==========
-            const savedTheme = localStorage.getItem('theme') || 'dark';
-            let trendChart, categoryChart;
-
-            function applyTheme(theme) {
-                if (theme === 'light') {
-                    body.classList.add('light-mode');
-                    if (themeToggle) themeToggle.innerHTML = '☀️';
-                } else {
-                    body.classList.remove('light-mode');
-                    if (themeToggle) themeToggle.innerHTML = '🌙';
-                }
-                // آپدیت نمودارها (اگر وجود داشتند و Chart موجود باشد)
-                try {
-                    updateChartsTheme();
-                } catch (e) {
-                    console.warn('نمودارها به‌روزرسانی نشدند:', e);
-                }
-            }
-
-            applyTheme(savedTheme);
-
-            if (themeToggle) {
-                themeToggle.addEventListener('click', () => {
-                    const isLight = body.classList.contains('light-mode');
-                    const newTheme = isLight ? 'dark' : 'light';
-                    applyTheme(newTheme);
-                    localStorage.setItem('theme', newTheme);
-                });
-            }
-
-            // ========== رسم نمودارها ==========
-            function createCharts() {
-                const trendCtx = document.getElementById('trendChart');
-                const categoryCtx = document.getElementById('categoryChart');
-
-                if (!trendCtx || !categoryCtx) {
-                    // canvas هنوز در DOM نیست -> صبر کن
-                    setTimeout(createCharts, 50);
-                    return;
-                }
-
-                // بررسی وجود کتابخانه Chart.js
-                if (typeof Chart === 'undefined') {
-                    console.warn('Chart.js بارگذاری نشده. نمودارها رسم نمی‌شوند.');
-                    return;
-                }
-
-                const isLight = body.classList.contains('light-mode');
-                const gridColor = isLight ? '#ddd' : '#333';
-                const textColor = getComputedStyle(body).getPropertyValue('--text-muted').trim() || '#aaa';
-
-                // نابود کردن نمودارهای قبلی
-                if (trendChart) trendChart.destroy();
-                if (categoryChart) categoryChart.destroy();
-
-                trendChart = new Chart(trendCtx, {
-                    type: 'line',
-                    data: {
-                        labels: ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور'],
-                        datasets: [
-                            {
-                                label: 'درآمد',
-                                data: [12, 19, 15, 22, 30, 28],
-                                borderColor: '#2ecc71',
-                                backgroundColor: 'rgba(46, 204, 113, 0.1)',
-                                tension: 0.4,
-                                fill: true,
-                            },
-                            {
-                                label: 'هزینه',
-                                data: [8, 12, 10, 15, 20, 18],
-                                borderColor: '#ff7a00',
-                                backgroundColor: 'rgba(255, 122, 0, 0.1)',
-                                tension: 0.4,
-                                fill: true,
-                            },
-                        ],
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        plugins: {
-                            legend: { labels: { color: textColor } },
-                        },
-                        scales: {
-                            y: {
-                                grid: { color: gridColor },
-                                ticks: { color: textColor },
-                            },
-                            x: {
-                                grid: { color: gridColor },
-                                ticks: { color: textColor },
-                            },
-                        },
-                    },
-                });
-
-                categoryChart = new Chart(categoryCtx, {
-                    type: 'doughnut',
-                    data: {
-                        labels: ['خوراک', 'حمل و نقل', 'سرگرمی', 'قبوض', 'سایر'],
-                        datasets: [
-                            {
-                                data: [35, 15, 20, 20, 10],
-                                backgroundColor: ['#ff7a00', '#e74c3c', '#3498db', '#f1c40f', '#607d8b'],
-                                borderWidth: 0,
-                            },
-                        ],
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        cutout: '70%',
-                        plugins: {
-                            legend: { labels: { color: textColor } },
-                        },
-                    },
-                });
-            }
-
-            function updateChartsTheme() {
-                if (trendChart || categoryChart) {
-                    createCharts();
-                }
-            }
-
-            // تلاش برای رسم نمودارها در اولین فرصت
-            createCharts();
-            // همچنین بعد از load (محض اطمینان)
-            window.addEventListener('load', () => {
-                try { createCharts(); } catch (e) {}
-            });
-
-            // ========== منوی همبرگری ==========
-            if (menuToggle) {
-                menuToggle.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    sidebar.classList.toggle('open');
-                });
-            }
-            if (backdrop) {
-                backdrop.addEventListener('click', () => {
-                    sidebar.classList.remove('open');
-                });
-            }
-
-            // بستن منو با کلیک روی لینک‌های داخل سایدبار (اختیاری)
-            const sidebarLinks = sidebar.querySelectorAll('a');
-            sidebarLinks.forEach(link => {
-                link.addEventListener('click', () => {
-                    sidebar.classList.remove('open');
-                });
-            });
-
-            // ========== خروج از حساب ==========
-            if (logoutBtn) {
-                logoutBtn.addEventListener('click', () => {
-                    localStorage.removeItem('authToken');
-                    sessionStorage.removeItem('authToken');
-                    window.location.href = 'login.html';
-                });
-            }
-
-            // ========== Toast ==========
-            window.showToast = function(message, isError = false) {
-                const toast = document.getElementById('toast');
-                if (!toast) return;
-                toast.textContent = message;
-                toast.style.background = isError ? '#f44336' : 'var(--primary)';
-                toast.style.display = 'block';
-                setTimeout(() => {
-                    toast.style.display = 'none';
-                }, 3000);
+        // تابع دریافت رنگ‌های فعلی از body
+        function getChartColors() {
+            const style = getComputedStyle(body);
+            return {
+                text: style.getPropertyValue('--text').trim() || '#ffffff',
+                muted: style.getPropertyValue('--muted').trim() || '#aaaaaa',
+                grid: 'rgba(128,128,128,0.2)'
             };
+        }
+
+        // ==================== تم ====================
+        function setThemeIcons(theme) {
+            const icon = theme === 'light' ? '☀️' : '🌙';
+            if (themeToggleDesktop) themeToggleDesktop.innerHTML = icon;
+            if (themeToggleMobile) themeToggleMobile.innerHTML = icon;
+        }
+
+        function applyTheme(theme) {
+            if (theme === 'light') {
+                body.classList.add('light-mode');
+                setThemeIcons('light');
+            } else {
+                body.classList.remove('light-mode');
+                setThemeIcons('dark');
+            }
+            updateChartColors();
+        }
+
+        function toggleTheme() {
+            const isLight = body.classList.contains('light-mode');
+            const newTheme = isLight ? 'dark' : 'light';
+            applyTheme(newTheme);
+            localStorage.setItem('theme', newTheme);
+        }
+
+        applyTheme(savedTheme === 'light' ? 'light' : 'dark');
+
+        if (themeToggleDesktop) themeToggleDesktop.addEventListener('click', toggleTheme);
+        if (themeToggleMobile) themeToggleMobile.addEventListener('click', toggleTheme);
+
+        // ==================== نمودارها ====================
+        function createCharts() {
+            const trendCtx = document.getElementById('trendChart')?.getContext('2d');
+            const categoryCtx = document.getElementById('categoryChart')?.getContext('2d');
+            
+            if (!trendCtx || !categoryCtx) {
+                console.warn('Canvas context not found!');
+                return;
+            }
+            
+            // بررسی وجود کتابخانه Chart.js
+            if (typeof Chart === 'undefined') {
+                console.warn('Chart.js بارگذاری نشده. نمودارها رسم نمی‌شوند.');
+                return;
+            }
+
+            const colors = getChartColors();
+
+            // نابود کردن نمودارهای قبلی
+            if (trendChart) trendChart.destroy();
+            if (categoryChart) categoryChart.destroy();
+
+            // نمودار روند مالی
+            trendChart = new Chart(trendCtx, {
+                type: 'line',
+                data: {
+                    labels: ['فروردین', 'اردیبهشت', 'خرداد', 'تیر', 'مرداد', 'شهریور'],
+                    datasets: [
+                        {
+                            label: 'درآمد (میلیون تومان)',
+                            data: [12, 15, 8, 18, 14, 20],
+                            borderColor: '#28a745',
+                            backgroundColor: 'rgba(40,167,69,0.1)',
+                            borderWidth: 2,
+                            tension: 0.3,
+                            fill: true
+                        },
+                        {
+                            label: 'هزینه (میلیون تومان)',
+                            data: [5, 7, 4, 9, 6, 8],
+                            borderColor: '#dc3545',
+                            backgroundColor: 'rgba(220,53,69,0.1)',
+                            borderWidth: 2,
+                            tension: 0.3,
+                            fill: true
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: colors.text,
+                                boxWidth: 12,
+                                font: {
+                                    size: 11
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: colors.grid
+                            },
+                            ticks: {
+                                color: colors.muted,
+                                font: {
+                                    size: 10
+                                }
+                            }
+                        },
+                        x: {
+                            grid: {
+                                display: false
+                            },
+                            ticks: {
+                                color: colors.muted,
+                                font: {
+                                    size: 10
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+
+            // نمودار دسته‌بندی هزینه‌ها
+            categoryChart = new Chart(categoryCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['خوراک', 'حمل و نقل', 'سرگرمی', 'قبوض', 'سایر'],
+                    datasets: [{
+                        data: [35, 15, 20, 20, 10],
+                        backgroundColor: [
+                            '#ff7a00',
+                            '#dc3545',
+                            '#2196f3',
+                            '#28a745',
+                            '#6c757d'
+                        ],
+                        borderWidth: 0,
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: colors.text,
+                                font: {
+                                    size: 11
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+            
+            console.log('نمودارها با موفقیت ساخته شدند.');
+        }
+
+        function updateChartColors() {
+            if (trendChart || categoryChart) {
+                const colors = getChartColors();
+                
+                if (trendChart) {
+                    trendChart.options.plugins.legend.labels.color = colors.text;
+                    trendChart.options.scales.y.ticks.color = colors.muted;
+                    trendChart.options.scales.x.ticks.color = colors.muted;
+                    trendChart.options.scales.y.grid.color = colors.grid;
+                    trendChart.update();
+                }
+                
+                if (categoryChart) {
+                    categoryChart.options.plugins.legend.labels.color = colors.text;
+                    categoryChart.update();
+                }
+            }
+        }
+
+        // ==================== خروج ====================
+        document.getElementById('logoutBtn')?.addEventListener('click', (e) => {
+            e.preventDefault();
+            if (confirm('آیا مطمئن هستید که می‌خواهید از حساب کاربری خارج شوید؟')) {
+                localStorage.removeItem('authToken');
+                sessionStorage.removeItem('authToken');
+                localStorage.removeItem('theme');
+                window.location.href = 'login.html';
+            }
+        });
+
+        // ==================== سایدبار موبایل ====================
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebar = document.getElementById('sidebar');
+        if (sidebarToggle && sidebar) {
+            sidebarToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('open');
+                const icon = sidebarToggle.querySelector('i');
+                icon.classList.toggle('fa-bars');
+                icon.classList.toggle('fa-times');
+            });
+            sidebar.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    if (window.innerWidth <= 768) {
+                        sidebar.classList.remove('open');
+                        const icon = sidebarToggle.querySelector('i');
+                        icon.classList.add('fa-bars');
+                        icon.classList.remove('fa-times');
+                    }
+                });
+            });
+        }
+
+        // ==================== دکمه بازگشت به بالا ====================
+        const backToTop = document.getElementById('backToTop');
+        window.addEventListener('scroll', () => {
+            backToTop.classList.toggle('show', window.scrollY > 400);
+        });
+        backToTop.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // ==================== ساخت نمودارها با کمی تأخیر برای اطمینان از اعمال تم ====================
+        setTimeout(createCharts, 50);
+
+        // ==================== تابع Toast ====================
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.style.background = isError ? '#dc3545' : 'var(--primary)';
+            toast.style.display = 'block';
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
+        }
+
+        // ==================== دکمه خروجی گزارش ====================
+        document.querySelector('.btn-orange')?.addEventListener('click', () => {
+            showToast('گزارش با فرمت PDF در حال دانلود است...');
         });
     </script>
 </body>
