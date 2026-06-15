@@ -22,6 +22,11 @@
             --shadow: 0 8px 32px rgba(0,0,0,0.4);
             --transition: 0.6s ease;
             --radius: 12px;
+            
+            /* متغیرهای اختصاصی برای سمت چپ (تصویر) */
+            --image-gradient-end: rgba(18,18,18,0.9);
+            --image-bg-solid: #1e1e1e;
+            --overlay-bg: rgba(18,18,18,0.6);
         }
 
         body.light-mode {
@@ -31,6 +36,11 @@
             --text-muted: #6e6e73;
             --border: #e0e0e0;
             --shadow: 0 8px 32px rgba(0,0,0,0.08);
+            
+            /* تغییر رنگ‌های سمت چپ در حالت روشن */
+            --image-gradient-end: rgba(245,245,247,0.85);
+            --image-bg-solid: #ffffff;
+            --overlay-bg: rgba(255,255,255,0.7);
         }
 
         * {
@@ -134,7 +144,7 @@
             color: var(--text);
             font-size: 1rem;
             font-family: inherit;
-            transition: border-color 0.3s, box-shadow 0.3s;
+            transition: border-color 0.3s, box-shadow 0.3s, background-color var(--transition);
         }
         .input-group input:focus {
             outline: none;
@@ -147,7 +157,7 @@
         /* فیلدهای ایمیل و رمز ممکن است LTR باشند */
         input[dir="ltr"] {
             direction: ltr;
-            text-align: right; /* چون کادر راست‌چین است، متن ltr از سمت راست شروع شود */
+            text-align: right; 
         }
 
         /* دکمه نمایش رمز */
@@ -214,7 +224,8 @@
         /* بخش شعار و تصویر (سمت چپ) */
         .image-side {
             flex: 1;
-            background: linear-gradient(135deg, rgba(255,122,0,0.15), rgba(18,18,18,0.9)), #1e1e1e;
+            /* تغییر یافت تا با متغیرها همگام شود */
+            background: linear-gradient(135deg, rgba(255,122,0,0.15), var(--image-gradient-end)), var(--image-bg-solid);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -225,11 +236,13 @@
         .image-overlay {
             text-align: center;
             padding: 40px;
-            background: rgba(18,18,18,0.6);
+            /* تغییر یافت تا با متغیرها همگام شود */
+            background: var(--overlay-bg);
             border-radius: 15px;
             border: 1px solid rgba(255,122,0,0.3);
             backdrop-filter: blur(10px);
             max-width: 80%;
+            transition: background var(--transition);
         }
         .image-overlay h2 {
             color: var(--primary);
@@ -267,7 +280,7 @@
                 flex-direction: column;
             }
             .image-side {
-                display: none; /* حذف بخش شعار در موبایل */
+                display: none;
             }
             .form-side {
                 padding: 80px 20px 40px;
@@ -289,21 +302,30 @@
                     برای مدیریت هوشمند هزینه‌های خود، اطلاعات زیر را تکمیل کنید.
                 </p>
 
-                <form id="signupForm">
+                <!-- اضافه شدن method POST -->
+                <form id="signupForm" method="POST">
+                    
+                    <!-- تگ امنیتی جنگو -->
+                    <!-- {% csrf_token %} -->
+
                     <div class="input-group">
                         <label for="fullname">نام و نام خانوادگی</label>
+                        <!-- اضافه شدن name="fullname" -->
                         <input
                             type="text"
                             id="fullname"
+                            name="fullname"
                             required
                         />
                     </div>
 
                     <div class="input-group">
                         <label for="email">آدرس ایمیل</label>
+                        <!-- اضافه شدن name="email" -->
                         <input
                             type="email"
                             id="email"
+                            name="email"
                             placeholder="example@mail.com"
                             required
                             dir="ltr"
@@ -313,9 +335,11 @@
                     <div class="input-group">
                         <label for="password">رمز عبور</label>
                         <div class="password-wrapper">
+                            <!-- اضافه شدن name="password" -->
                             <input
                                 type="password"
                                 id="password"
+                                name="password"
                                 placeholder="********"
                                 required
                                 dir="ltr"
@@ -327,9 +351,11 @@
                     <div class="input-group">
                         <label for="confirm-password">تکرار رمز عبور</label>
                         <div class="password-wrapper">
+                            <!-- اضافه شدن name="confirm_password" -->
                             <input
                                 type="password"
                                 id="confirm-password"
+                                name="confirm_password"
                                 placeholder="********"
                                 required
                                 dir="ltr"
@@ -393,23 +419,17 @@
             });
         });
 
-        // ===== مدیریت فرم ثبت‌نام =====
+        // ===== مدیریت فرم ثبت‌نام و ارسال به بک‌اند =====
         const signupForm = document.getElementById('signupForm');
         const submitBtn = document.getElementById('submitBtn');
 
         signupForm.addEventListener('submit', (e) => {
-            e.preventDefault();
+            e.preventDefault(); // جلوگیری موقت برای اعتبارسنجی فرانت‌اند
 
             const fullName = document.getElementById('fullname').value.trim();
             const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
             const confirmPassword = document.getElementById('confirm-password').value;
-
-            // اعتبارسنجی
-            if (!fullName || !email || !password || !confirmPassword) {
-                showToast('لطفاً تمامی فیلدها را پر کنید.', true);
-                return;
-            }
 
             // اعتبارسنجی ایمیل ساده
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -428,20 +448,12 @@
                 return;
             }
 
-            // شبیه‌سازی ثبت‌نام
-            submitBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> در حال ایجاد حساب...';
+            // اگر تمام شروط رعایت شد، انیمیشن دکمه فعال شده و فرم سمت جنگو ارسال می‌شود
+            submitBtn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> در حال ارسال اطلاعات...';
             submitBtn.disabled = true;
 
-            setTimeout(() => {
-                showToast(`ثبت‌نام با موفقیت انجام شد! خوش آمدید ${fullName}.`);
-                // می‌توان نام کاربری را ذخیره کرد (شبیه‌سازی)
-                localStorage.setItem('userName', fullName);
-                localStorage.setItem('userEmail', email);
-
-                setTimeout(() => {
-                    window.location.href = 'login.html';
-                }, 1500);
-            }, 1500);
+            // ارسال واقعی درخواست POST به سرور جنگو
+            signupForm.submit();
         });
 
         // ===== تابع نمایش پیام Toast =====
