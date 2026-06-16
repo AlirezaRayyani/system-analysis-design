@@ -7,83 +7,74 @@
 
     <!-- Bootstrap 5 RTL -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css" />
-    <!-- فونت وزیر -->
-    <link href="https://cdn.jsdelivr.net/gh/rastikerdar/vazirmatn@v33.0.0/Vazirmatn-font-face.css" rel="stylesheet" />
+    <!-- فونت وزیر (اصلاح شده مطابق صفحه ۴۰۴) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v18.0.0/dist/font-face.css">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
     <style>
         /* اولویت بالا برای متغیرهای ما */
         :root {
-            --bg: #121212 !important;
-            --surface: #1e1e1e !important;
-            --text: #ffffff !important;
-            --muted: #a0a0a0 !important;
-            --primary: #ff7a00 !important;
-            --primary-hover: #e06b00 !important;
-            --green: #28a745 !important;
-            --red: #dc3545 !important;
-            --blue: #2196f3 !important;
-            --border: #333333 !important;
-            --card-bg: rgba(255,255,255,0.03) !important;
-            --logo-gradient: linear-gradient(135deg, #ffffff 0%, #cccccc 100%) !important;
-            --sidebar-bg: #1a1a1a !important;
-            --shadow: 0 4px 20px rgba(0,0,0,0.3) !important;
-            --income-color: #28a745 !important;
-            --expense-color: #dc3545 !important;
-            --input-text: #ffffff !important; /* رنگ متن فیلدها در حالت تاریک */
-            --input-bg: rgba(255,255,255,0.08) !important; /* پس‌زمینه فیلدها در حالت تاریک */
-            --bs-body-color: var(--text) !important; /* بازنویسی متغیر Bootstrap */
-            --bs-body-bg: var(--bg) !important; /* بازنویسی متغیر Bootstrap */
+            --bg: #121212;
+            --surface: #1e1e1e;
+            --text: #ffffff;
+            --muted: #a0a0a0;
+            --primary: #ff7a00;
+            --primary-hover: #e06b00;
+            --green: #28a745;
+            --red: #dc3545;
+            --blue: #2196f3;
+            --border: #333333;
+            --card-bg: rgba(255,255,255,0.03);
+            --logo-gradient: linear-gradient(135deg, #ffffff 0%, #cccccc 100%);
+            --sidebar-bg: #1a1a1a;
+            --shadow: 0 4px 20px rgba(0,0,0,0.3);
+            --income-color: #28a745;
+            --expense-color: #dc3545;
+            --input-text: #ffffff;
+            --input-bg: rgba(255,255,255,0.08);
+            --glow-color: rgba(255, 122, 0, 0.15);
         }
 
         body.light-mode {
-            --bg: #f5f5f7 !important;
-            --surface: #ffffff !important;
-            --text: #1d1d1f !important;
-            --muted: #6e6e73 !important;
-            --primary: #ff7a00 !important;
-            --primary-hover: #e06b00 !important;
-            --green: #28a745 !important;
-            --red: #dc3545 !important;
-            --blue: #2196f3 !important;
-            --border: #e0e0e0 !important;
-            --card-bg: rgba(0,0,0,0.02) !important;
-            --logo-gradient: linear-gradient(135deg, #1d1d1f 0%, #4a4a4f 100%) !important;
-            --sidebar-bg: #ffffff !important;
-            --shadow: 0 4px 20px rgba(0,0,0,0.05) !important;
-            --income-color: #28a745 !important;
-            --expense-color: #dc3545 !important;
-            --input-text: #1d1d1f !important; /* رنگ متن فیلدها در حالت روشن */
-            --input-bg: rgba(0,0,0,0.04) !important; /* پس‌زمینه فیلدها در حالت روشن */
-            --bs-body-color: var(--text) !important; /* بازنویسی متغیر Bootstrap */
-            --bs-body-bg: var(--bg) !important; /* بازنویسی متغیر Bootstrap */
-        }
-
-        /* بازنویسی استایل‌های Bootstrap که ممکن است تداخل ایجاد کنند */
-        body {
-            --bs-body-color: var(--text) !important;
-            --bs-body-bg: var(--bg) !important;
-            color: var(--text) !important;
-            background-color: var(--bg) !important;
+            --bg: #f5f5f7;
+            --surface: #ffffff;
+            --text: #1d1d1f;
+            --muted: #6e6e73;
+            --primary: #ff7a00;
+            --primary-hover: #e06b00;
+            --green: #28a745;
+            --red: #dc3545;
+            --blue: #2196f3;
+            --border: #e0e0e0;
+            --card-bg: rgba(0,0,0,0.02);
+            --logo-gradient: linear-gradient(135deg, #1d1d1f 0%, #4a4a4f 100%);
+            --sidebar-bg: #ffffff;
+            --shadow: 0 4px 20px rgba(0,0,0,0.05);
+            --income-color: #28a745;
+            --expense-color: #dc3545;
+            --input-text: #1d1d1f;
+            --input-bg: rgba(0,0,0,0.04);
+            --glow-color: rgba(255, 122, 0, 0.08);
         }
 
         html, body {
-            overflow-x: hidden !important;
+            overflow-x: hidden;
             width: 100%;
             max-width: 100vw;
         }
 
         * {
             margin: 0;
-            padding: -0;
+            padding: 0;
             box-sizing: border-box;
         }
 
         body {
-            font-family: 'Vazirmatn', 'Vazir', sans-serif;
-            background-color: var(--bg) !important;
-            color: var(--text) !important;
+            /* تغییر فونت به Vazir مطابق خواسته شما */
+            font-family: 'Vazir', sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
             transition: background-color 0.7s ease, color 0.7s ease;
             display: flex;
             min-height: 100vh;
@@ -129,37 +120,55 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-logo a:hover {
+            filter: brightness(1.2);
+            transform: scale(1.02);
+        }
+
+        body.light-mode .sidebar-logo a {
+            background: linear-gradient(135deg, #1d1d1f 0%, #4a4a4f 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .sidebar-menu {
             list-style: none;
             flex-grow: 1;
+            padding: 0;
         }
 
         .sidebar-menu li {
-            margin-bottom: 0.5rem;
+            margin-bottom: 1rem;
         }
 
         .sidebar-menu a {
             display: flex;
             align-items: center;
             gap: 0.8rem;
-            color: var(--text) !important;
+            color: var(--text);
             padding: 0.8rem 1rem;
             border-radius: 8px;
             transition: all 0.3s;
             font-weight: 500;
+            text-decoration: none;
         }
 
         .sidebar-menu a:hover,
         .sidebar-menu a.active {
-            background-color: rgba(255, 122, 0, 0.1);
-            color: var(--primary) !important;
+            background-color: rgba(255, 122, 0, 0.15);
+            color: var(--primary);
+            transform: translateX(-5px);
         }
 
         .sidebar-menu a.logout:hover {
-            background-color: rgba(220, 53, 69, 0.1);
-            color: var(--red) !important;
+            background-color: rgba(220, 53, 69, 0.15);
+            color: var(--red);
+            transform: translateX(-5px);
         }
 
         .main-content {
@@ -167,7 +176,7 @@
             padding: 2rem;
             overflow-y: auto;
             overflow-x: hidden;
-            background-color: var(--bg) !important;
+            background-color: var(--bg);
             max-width: 100%;
         }
 
@@ -198,7 +207,7 @@
 
         .btn-orange {
             background-color: var(--primary);
-            color: #fff !important;
+            color: #fff;
             border: none;
             padding: 0.7rem 1.5rem;
             border-radius: 10px;
@@ -231,7 +240,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--text) !important;
+            color: var(--text);
         }
 
         .theme-toggle-btn:hover {
@@ -245,7 +254,7 @@
             z-index: 2000;
             display: none;
             background: var(--surface);
-            padding: 0.5rem;
+            padding: -0.5rem;
             border-radius: 8px;
             box-shadow: var(--shadow);
             border: none;
@@ -255,7 +264,7 @@
             height: 40px;
             align-items: center;
             justify-content: center;
-            color: var(--text) !important;
+            color: var(--text);
         }
 
         /* ==================== بخش اصلی تراکنش‌ها ==================== */
@@ -274,9 +283,7 @@
             font-weight: 700;
             background: linear-gradient(135deg, var(--text), var(--muted));
             -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
             background-clip: text;
-            margin: 0;
             flex-grow: 1;
             text-align: right;
         }
@@ -291,9 +298,9 @@
         }
 
         .search-box {
-            background: var(--input-bg) !important;
-            border: 1px solid var(--border) !important;
-            color: var(--input-text) !important;
+            background: var(--input-bg);
+            border: 1px solid var(--border);
+            color: var(--input-text);
             padding: 12px 20px;
             border-radius: 30px;
             width: 280px;
@@ -304,13 +311,13 @@
 
         .search-box:focus {
             outline: none;
-            border-color: var(--primary) !important;
+            border-color: var(--primary);
         }
 
         /* جدول تراکنش‌ها */
         .card {
-            background: var(--surface) !important;
-            border: 1px solid var(--border) !important;
+            background: var(--surface);
+            border: 1px solid var(--border);
             border-radius: 16px;
             overflow-x: auto;
             box-shadow: var(--shadow);
@@ -331,11 +338,11 @@
             padding: 16px;
             text-align: right;
             border-bottom: 1px solid var(--border);
-            color: var(--text) !important;
+            color: var(--text);
         }
 
         .transactions-table th {
-            color: var(--muted) !important;
+            color: var(--muted);
             font-weight: 500;
             background: rgba(0, 0, 0, 0.1);
         }
@@ -346,12 +353,12 @@
 
         /* رنگ‌بندی مبالغ - هزینه‌ها قرمز، درآمدها سبز */
         .income {
-            color: var(--income-color) !important;
+            color: var(--income-color);
             font-weight: 700;
         }
 
         .expense {
-            color: var(--expense-color) !important;
+            color: var(--expense-color);
             font-weight: 700;
         }
 
@@ -364,18 +371,18 @@
 
         .badge.success {
             background: rgba(40, 167, 69, 0.15);
-            color: var(--green) !important;
+            color: var(--green);
         }
 
         .badge.pending {
             background: rgba(255, 152, 0, 0.15);
-            color: #ff9800 !important;
+            color: #ff9800;
         }
 
         .btn-delete {
             background: none;
             border: none;
-            color: var(--red) !important;
+            color: var(--red);
             cursor: pointer;
             font-size: 1.1rem;
             transition: transform 0.3s;
@@ -405,8 +412,8 @@
         }
 
         .modal-content {
-            background: var(--surface) !important;
-            border: 1px solid var(--border) !important;
+            background: var(--surface);
+            border: 1px solid var(--border);
             border-radius: 16px;
             padding: 30px;
             width: 90%;
@@ -417,7 +424,7 @@
         .modal-content h3 {
             margin-bottom: 20px;
             font-size: 1.5rem;
-            color: var(--text) !important;
+            color: var(--text);
         }
 
         .form-group {
@@ -427,32 +434,32 @@
         .form-group label {
             display: block;
             margin-bottom: 8px;
-            color: var(--muted) !important;
+            color: var(--muted);
         }
 
         .form-group input,
         .form-group select {
             width: 100%;
             padding: 12px;
-            background: var(--input-bg) !important;
-            border: 1px solid var(--border) !important;
+            background: var(--input-bg);
+            border: 1px solid var(--border);
             border-radius: 8px;
-            color: var(--input-text) !important;
+            color: var(--input-text);
             font-family: inherit;
             font-size: 0.95rem;
         }
 
         /* استایل مخصوص برای گزینه‌های سلکت‌باکس */
         .form-group select option {
-            background-color: var(--surface) !important;
-            color: var(--text) !important;
+            background-color: var(--surface);
+            color: var(--text);
             padding: 12px;
         }
 
         /* برای مرورگرهای مختلف */
         .form-group select:focus {
             outline: none;
-            border-color: var(--primary) !important;
+            border-color: var(--primary);
         }
 
         .modal-buttons {
@@ -464,16 +471,16 @@
 
         .btn-cancel {
             background: transparent;
-            border: 1px solid var(--border) !important;
-            color: var(--text) !important;
+            border: 1px solid var(--border);
+            color: var(--text);
             padding: 10px 20px;
             border-radius: 8px;
             cursor: pointer;
         }
 
         .btn-save {
-            background: var(--primary) !important;
-            color: #fff !important;
+            background: var(--primary);
+            color: #fff;
             border: none;
             padding: 10px 20px;
             border-radius: 8px;
@@ -488,7 +495,7 @@
             width: 3rem;
             height: 3rem;
             background: var(--primary);
-            color: #fff !important;
+            color: #fff;
             border: none;
             border-radius: 50%;
             font-size: 1.4rem;
@@ -510,7 +517,7 @@
             background: none;
             border: none;
             font-size: 1.8rem;
-            color: var(--text) !important;
+            color: var(--text);
             cursor: pointer;
         }
 
@@ -519,7 +526,7 @@
             bottom: 2rem;
             right: 2rem;
             background: var(--primary);
-            color: #fff !important;
+            color: #fff;
             padding: 12px 24px;
             border-radius: 8px;
             box-shadow: var(--shadow);
@@ -858,8 +865,8 @@
         let nextId = 6;
         let deleteTargetId = null;
 
-                // رندر جدول
-                function renderTable(data) {
+        // رندر جدول
+        function renderTable(data) {
             const tableBody = document.getElementById('transactionsTableBody');
             if (!tableBody) return;
             
@@ -898,7 +905,6 @@
                 });
             });
         }
-
 
         // مدیریت مودال ثبت
         const openAddModalBtn = document.getElementById('openAddModal');
@@ -945,7 +951,7 @@
                     id: nextId++,
                     title,
                     category,
-                    amount, // اینجا مقدار با علامت صحیح ذخیره می‌شود
+                    amount,
                     type,
                     date: new Date().toLocaleDateString('fa-IR'),
                     status: 'success'
@@ -991,6 +997,20 @@
             if (e.target === addModal) addModal.classList.remove('active');
             if (e.target === confirmModal) confirmModal.classList.remove('active');
         });
+
+        // جستجو در تراکنش‌ها
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => {
+                const searchTerm = e.target.value.toLowerCase();
+                const filtered = transactions.filter(trx => 
+                    trx.title.toLowerCase().includes(searchTerm) ||
+                    trx.category.toLowerCase().includes(searchTerm) ||
+                    trx.date.includes(searchTerm)
+                );
+                renderTable(filtered);
+            });
+        }
 
         // رندر اولیه
         renderTable(transactions);
