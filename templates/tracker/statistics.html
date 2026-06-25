@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>داشبورد اصلی | آوندسنتر</title>
+    <title>آمار و گزارش‌ها | آوندسنتر</title>
 
     <!-- Bootstrap 5 RTL -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css">
@@ -11,6 +11,8 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/rastikerdar/vazir-font@v18.0.0/dist/font-face.css">
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
     <style>
         :root {
@@ -22,15 +24,12 @@
             --primary-hover: #e06b00;
             --green: #28a745;
             --red: #dc3545;
+            --blue: #2196f3;
             --border: #333333;
             --card-bg: rgba(255,255,255,0.03);
             --logo-gradient: linear-gradient(135deg, #ffffff 0%, #cccccc 100%);
             --sidebar-bg: #1a1a1a;
             --shadow: 0 4px 20px rgba(0,0,0,0.3);
-            
-            /* متغیرهای جدید برای مودال و فرم‌ها */
-            --input-text: #ffffff;
-            --input-bg: rgba(255,255,255,0.08);
         }
 
         body.light-mode {
@@ -42,15 +41,12 @@
             --primary-hover: #e06b00;
             --green: #28a745;
             --red: #dc3545;
+            --blue: #2196f3;
             --border: #e0e0e0;
             --card-bg: rgba(0,0,0,0.02);
             --logo-gradient: linear-gradient(135deg, #1d1d1f 0%, #4a4a4f 100%);
             --sidebar-bg: #ffffff;
             --shadow: 0 4px 20px rgba(0,0,0,0.05);
-
-            /* متغیرهای جدید برای حالت روز */
-            --input-text: #1d1d1f;
-            --input-bg: rgba(0,0,0,0.04);
         }
 
         html, body {
@@ -82,6 +78,7 @@
         .text-orange { color: var(--primary); }
         .text-green { color: var(--green); }
         .text-red { color: var(--red); }
+        .text-blue { color: var(--blue); }
 
         .dashboard-wrapper {
             display: flex;
@@ -248,7 +245,7 @@
             margin-bottom: 2rem;
         }
 
-        .card-summary {
+        .stat-card {
             background-color: var(--surface);
             border: 1px solid var(--border);
             border-radius: 16px;
@@ -257,26 +254,28 @@
             align-items: center;
             gap: 1.2rem;
             box-shadow: var(--shadow);
-            transition: transform 0.3s, border-color 0.3s;
+            transition: transform 0.3s;
             min-width: 0;
+            border-right: 4px solid transparent;
         }
 
-        .card-summary:hover {
+        .stat-card:hover {
             transform: translateY(-5px);
         }
 
-        .card-summary.border-green {
-            border-right: 4px solid var(--green);
+        .stat-card.income {
+            border-right-color: var(--green);
         }
-        .card-summary.border-red {
-            border-right: 4px solid var(--red);
+        .stat-card.expense {
+            border-right-color: var(--red);
+        }
+        .stat-card.balance {
+            border-right-color: var(--blue);
         }
 
-        .card-icon {
-            width: 55px;
+        .stat-icon {
+            width: IIIpx;
             height: 55px;
-            background-color: rgba(255, 122, 0, 0.1);
-            color: var(--primary);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -285,27 +284,35 @@
             flex-shrink: 0;
         }
 
-        .card-info h3 {
+        .stat-card.income .stat-icon {
+            background-color: rgba(40,167,69,0.1);
+            color: var(--green);
+        }
+        .stat-card.expense .stat-icon {
+            background-color: rgba(220,53,69,0.1);
+            color: var(--red);
+        }
+        .stat-card.balance .stat-icon {
+            background-color: rgba(33,150,243,0.1);
+            color: var(--blue);
+        }
+
+        .stat-info h3 {
             font-size: 0.85rem;
             color: var(--muted);
             margin-bottom: 0.3rem;
         }
 
-        .card-info .amount {
+        .stat-info .amount {
             font-size: 1.4rem;
             font-weight: bold;
         }
 
-        .card-info .amount span {
-            font-size: 0.8rem;
-            font-weight: normal;
-            color: var(--muted);
-        }
-
-        .dashboard-grid {
+        .charts-grid {
             display: grid;
-            grid-template-columns: 2fr 1fr;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
             gap: 1.5rem;
+            margin-bottom: 2rem;
         }
 
         .dashboard-box {
@@ -346,162 +353,6 @@
             overflow: hidden;
         }
 
-        .recent-list {
-            list-style: none;
-        }
-
-        .tx-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 0;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .tx-item:last-child {
-            border-bottom: none;
-            padding-bottom: 0;
-        }
-
-        .tx-info {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .tx-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .bg-green-light { background-color: rgba(40,167,69,0.1); color: var(--green); }
-        .bg-red-light { background-color: rgba(220,53,69,0.1); color: var(--red); }
-
-        .tx-info h4 {
-            font-size: 0.9rem;
-            margin-bottom: 0.2rem;
-        }
-
-        .tx-info small {
-            color: var(--muted);
-            font-size: 0.8rem;
-        }
-
-        .tx-amount {
-            font-weight: bold;
-            font-size: 0.95rem;
-        }
-
-        /* ==================== استایل‌های مودال ==================== */
-        .modal {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.7);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 2000;
-            visibility: hidden;
-            opacity: 0;
-            transition: visibility 0.3s, opacity 0.3s;
-        }
-
-        .modal.active {
-            visibility: visible;
-            opacity: 1;
-        }
-
-        .modal-content {
-            background: var(--surface) !important;
-            border: 1px solid var(--border) !important;
-            border-radius: 16px;
-            padding: 30px;
-            width: 90%;
-            max-width: 450px;
-            box-shadow: var(--shadow);
-        }
-
-        .modal-content h3 {
-            margin-bottom: 20px;
-            font-size: 1.5rem;
-            color: var(--text) !important;
-            font-weight: bold;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: var(--muted) !important;
-            font-size: 0.95rem;
-        }
-
-        .form-group input,
-        .form-group select {
-            width: 100%;
-            padding: 12px;
-            background: var(--input-bg) !important;
-            border: 1px solid var(--border) !important;
-            border-radius: 8px;
-            color: var(--input-text) !important;
-            font-family: inherit;
-            font-size: 0.95rem;
-        }
-
-        .form-group select option {
-            background-color: var(--surface) !important;
-            color: var(--text) !important;
-            padding: 12px;
-        }
-
-        .form-group select:focus,
-        .form-group input:focus {
-            outline: none;
-            border-color: var(--primary) !important;
-        }
-
-        .modal-buttons {
-            display: flex;
-            justify-content: flex-end;
-            gap: 15px;
-            margin-top: 25px;
-        }
-
-        .btn-cancel {
-            background: transparent;
-            border: 1px solid var(--border) !important;
-            color: var(--text) !important;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        
-        .btn-cancel:hover {
-            background: rgba(255,255,255,0.05);
-        }
-
-        .btn-save {
-            background: var(--primary) !important;
-            color: #fff !important;
-            border: none;
-            padding: 10px 25px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-        
-        .btn-save:hover {
-            background: var(--primary-hover) !important;
-        }
-
         .back-to-top {
             position: fixed;
             bottom: 2rem;
@@ -535,10 +386,32 @@
             cursor: pointer;
         }
 
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--primary);
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            z-index: 2000;
+            font-weight: 500;
+            animation: slideIn 0.3s ease;
+            display: none;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(30px); opacity: 0; }
+            to   { transform: translateY(0); opacity: 1; }
+        }
+
+        /* ==== تغییرات اصلی برای موبایل ==== */
         @media (max-width: 992px) {
-            .dashboard-grid {
+            .charts-grid {
                 grid-template-columns: 1fr;
             }
+            
             .chart-container {
                 height: 250px;
             }
@@ -548,6 +421,7 @@
             .dashboard-wrapper {
                 flex-direction: column;
             }
+
             .sidebar {
                 position: fixed;
                 top: 0;
@@ -558,9 +432,11 @@
                 width: 260px;
                 box-shadow: -5px 0 15px rgba(0,0,0,0.2);
             }
+
             .sidebar.open {
                 transform: translateX(0);
             }
+
             .sidebar-toggle {
                 display: block;
                 position: fixed;
@@ -572,35 +448,44 @@
                 border-radius: 8px;
                 box-shadow: var(--shadow);
             }
+
             .theme-toggle-mobile {
                 display: flex;
             }
+
             .header-actions .theme-toggle-btn {
                 display: none;
             }
+
             .main-content {
                 padding: 1rem;
                 margin-top: 4rem;
                 width: 100%;
                 max-width: 100vw;
             }
+
             .top-header {
                 flex-direction: column;
                 align-items: flex-start;
             }
+            
             .summary-cards {
                 grid-template-columns: 1fr;
             }
+            
             .dashboard-box {
                 width: 100%;
                 max-width: 100%;
                 overflow-x: auto;
             }
+            
             .chart-container {
                 width: 100%;
                 max-width: 100%;
                 overflow: hidden;
             }
+            
+            /* اطمینان از عدم اسکرول افقی کلی صفحه */
             .main-content {
                 overflow-x: hidden;
             }
@@ -618,7 +503,7 @@
     <div class="dashboard-wrapper">
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-logo">
-                <a href="{% url 'home' %}">آوندسنتر</a>
+                <a href="index.html">آوندسنتر</a>
             </div>
             <ul class="sidebar-menu">
                 <li><a href="{% url 'dashboard' %}" class="active"><i class="fas fa-home"></i> داشبورد</a></li>
@@ -632,133 +517,76 @@
         <main class="main-content">
             <header class="top-header">
                 <div class="greeting">
-                    <h2>خوش آمدید، کاربر عزیز 👋</h2>
-                    <p>گزارش سریع وضعیت مالی شما در این ماه - <span id="current-date"></span></p>
+                    <h2>آمار و گزارش‌ها <i class="fas fa-chart-line"></i></h2>
+                    <p>تحلیل جامع وضعیت مالی و گزارش‌های آماری</p>
                 </div>
                 <div class="header-actions">
-                    <!-- به این دکمه ID اضافه شد -->
-                    <button class="btn-orange" id="openAddModal"><i class="fas fa-plus"></i> ثبت تراکنش جدید</button>
+                    <a href="{% url 'export_csv' %}" class="btn-orange" style="text-decoration: none; display: inline-block;">
+    <i class="fas fa-download"></i> خروجی گزارش
+</a>
+
                     <button class="theme-toggle-btn" id="themeToggleDesktop" title="تغییر تم"></button>
                 </div>
             </header>
 
+            <!-- کارت‌های خلاصه -->
             <section class="summary-cards">
-                <div class="card-summary">
-                    <div class="card-icon"><i class="fas fa-wallet"></i></div>
-                    <div class="card-info">
-                        <h3>موجودی کل</h3>
-                        <p class="amount">{{ balance }} <span>تومان</span></p>
+                <div class="stat-card income">
+                    <div class="stat-icon"><i class="fas fa-arrow-up"></i></div>
+                    <div class="stat-info">
+                        <h3>کل درآمد این ماه</h3>
+                        <p class="amount text-green">{{ current_month_income }} تومان</p>
                     </div>
                 </div>
-                <div class="card-summary border-green">
-                    <div class="card-icon" style="background-color:rgba(40,167,69,0.1); color: var(--green)">
-                        <i class="fas fa-arrow-down"></i>
-                    </div>
-                    <div class="card-info">
-                        <h3>درآمدکل</h3>
-                        <p class="amount text-green">{{ total_income }} <span>تومان</span></p>
+                <div class="stat-card expense">
+                    <div class="stat-icon"><i class="fas fa-arrow-down"></i></div>
+                    <div class="stat-info">
+                        <h3>کل هزینه‌های این ماه</h3>
+                        <p class="amount text-red">{{ current_month_expenses }} تومان</p>
                     </div>
                 </div>
-                <div class="card-summary border-red">
-                    <div class="card-icon" style="background-color:rgba(220,53,69,0.1); color: var(--red)">
-                        <i class="fas fa-arrow-up"></i>
-                    </div>
-                    <div class="card-info">
-                        <h3>هزینه کل</h3>
-                        <p class="amount text-red">{{ total_expense  }} <span>تومان</span></p>
+                <div class="stat-card balance">
+                    <div class="stat-icon"><i class="fas fa-wallet"></i></div>
+                    <div class="stat-info">
+                        <h3>موجودی خالص</h3>
+                        <p class="amount text-blue">{{ balance }} تومان</p>
+
                     </div>
                 </div>
             </section>
 
-            <section class="dashboard-grid">
+            <!-- نمودارها -->
+            <section class="charts-grid">
                 <div class="dashboard-box">
                     <div class="box-header">
-                        <h3><i class="fas fa-chart-line"></i> نمودار جریان مالی</h3>
-                        {% comment %} <a href="#">مشاهده کامل</a> {% endcomment %}
+                        <h3><i class="fas fa-chart-line"></i> روند مالی (۶ ماه گذشته)</h3>
+                        {% comment %} <a href="#">جزئیات بیشتر</a> {% endcomment %}
                     </div>
                     <div class="chart-container">
-                        <canvas id="financeChart"></canvas>
+                        <canvas id="trendChartCanvas"></canvas>
                     </div>
                 </div>
 
                 <div class="dashboard-box">
                     <div class="box-header">
-                        <h3><i class="fas fa-history"></i> آخرین تراکنش‌ها</h3>
-                        <a href="{% url 'transactions' %}">همه تراکنش‌ها</a>
+                        <h3><i class="fas fa-chart-pie"></i> دسته‌بندی هزینه‌ها</h3>
+                        {% comment %} <a href="#">جزئیات بیشتر</a> {% endcomment %}
                     </div>
-                    <ul class="recent-list">
-                        {% for transaction in recent_transactions %}
-    <li>
-        <div class="transaction-info">
-            <!-- اگر title خالی باشد، category را نمایش می‌دهد -->
-            <h4>{{ transaction.title|default:transaction.category }}</h4> 
-            
-            <!-- نمایش تاریخ به همراه ساعت و دقیقه -->
-            <p>{{ transaction.date_time|date:"Y/m/d H:i" }}</p>
-        </div>
-        <div class="transaction-amount {% if transaction.kind == 'Income' %}positive{% else %}negative{% endif %}">
-            {% if transaction.kind == 'Income' %}+{% else %}-{% endif %} {{ transaction.amount }} تومان
-        </div>
-    </li>
-    {% empty %}
-    <li>هیچ تراکنشی برای نمایش وجود ندارد.</li>
-    {% endfor %}
-</ul>
+                    <div class="chart-container">
+                        <canvas id="categoryChartCanvas"></canvas>
+                    </div>
                 </div>
             </section>
         </main>
-    </div>
-
-    <!-- مودال ثبت تراکنش (کپی شده از صفحه Transactions) -->
-    <div class="modal" id="addModal">
-        <div class="modal-content">
-            <h3>ثبت تراکنش جدید</h3>
-             <form method="POST" action="{% url 'add_transaction' %}">
-            {% csrf_token %}
-            <div class="form-group">
-                <label>عنوان</label>
-                <input type="text" name="title" id="trxTitle" placeholder="مثلاً خرید کتاب" />
-            </div>
-            <div class="form-group">
-                <label>مبلغ (تومان)</label>
-                <input type="number" name="amount" id="trxAmount" placeholder="۰" />
-            </div>
-            <div class="form-group">
-                <label>نوع</label>
-                 <select name="kind" id="trxType">
-                    <option value="Expense">هزینه</option>
-                    <option value="Income">درآمد</option>
-                </select>
-            </div>
-            <div class="form-group">
-                <label>دسته‌بندی</label>
-                 <select name="category" id="trxCategory">
-                    <option value="خوراک">خوراک</option>
-                    <option value="حمل و نقل">حمل و نقل</option>
-                    <option value="قبوض">قبوض</option>
-                    <option value="درآمد">درآمد</option>
-                    <option value="سرگرمی">سرگرمی</option>
-                    <option value="سایر">سایر</option>
-                </select>
-            </div>
-            <div class="form-group">
-    <label for="date_time">تاریخ و زمان:</label>
-    <input type="datetime-local" id="date_time" name="date_time" class="form-control" required>
-</div>
-
-            <div class="modal-buttons" style="flex-direction: row-reverse; justify-content: flex-end;">
-                <button class="btn-cancel" id="cancelAdd">انصراف</button>
-                <button type="submit" class="btn-save" id="saveTrx">ذخیره</button>
-            </div>
-        </div>
     </div>
 
     <button class="back-to-top" id="backToTop" title="بازگشت به بالا">
         <i class="fas fa-chevron-up"></i>
     </button>
 
+    <div class="toast" id="toast">پیام</div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 
     <script>
         // ==================== متغیرها و توابع مشترک ====================
@@ -766,32 +594,10 @@
         const themeToggleDesktop = document.getElementById('themeToggleDesktop');
         const themeToggleMobile = document.getElementById('themeToggleMobile');
         const savedTheme = localStorage.getItem('theme');
+        let trendChart = null;
+        let categoryChart = null;
 
-        // ==================== مدیریت باز و بسته شدن مودال ====================
-        const addModal = document.getElementById('addModal');
-        const openAddModalBtn = document.getElementById('openAddModal');
-        const cancelAddBtn = document.getElementById('cancelAdd');
-
-        if (openAddModalBtn && addModal) {
-            openAddModalBtn.addEventListener('click', () => {
-                addModal.classList.add('active');
-            });
-        }
-
-        if (cancelAddBtn && addModal) {
-            cancelAddBtn.addEventListener('click', () => {
-                addModal.classList.remove('active');
-            });
-        }
-
-        // بستن مودال با کلیک کردن روی بک‌گراند تاریک خارج از فرم
-        window.addEventListener('click', (e) => {
-            if (e.target === addModal) {
-                addModal.classList.remove('active');
-            }
-        });
-
-        // ==================== تنظیمات نمودار ====================
+        // تابع دریافت رنگ‌های فعلی از body
         function getChartColors() {
             const style = getComputedStyle(body);
             return {
@@ -800,115 +606,6 @@
                 grid: 'rgba(128,128,128,0.2)'
             };
         }
-
-        const ctx = document.getElementById('financeChart')?.getContext('2d');
-        let financeChart = null;
-
-               
-
-        function createChart() {
-            if (!ctx) {
-                console.warn('Canvas context not found!');
-                return;
-            }
-            
-            fetch("{% url 'chart_data_api' %}")
-                .then(response => response.json())
-                .then(data => {
-                    const colors = getChartColors();
-                    
-                    // اگر نموداری از قبل وجود دارد، پاک شود تا روی هم تداخل نکنند
-                    if (financeChart) {
-                        financeChart.destroy();
-                    }
-
-                    // ساخت نمودار با داده‌های واقعی
-                    financeChart = new Chart(ctx, {
-                        type: 'line',
-                        data: {
-                            labels: data.labels,
-                            datasets: [
-                                {
-                                    label: 'درآمد (تومان)',
-                                    data: data.incomes,
-                                    borderColor: '#28a745',
-                                    backgroundColor: 'rgba(40,167,69,0.1)',
-                                    borderWidth: 2,
-                                    tension: 0.3,
-                                    fill: true
-                                },
-                                {
-                                    label: 'هزینه (تومان)',
-                                    data: data.expenses,
-                                    borderColor: '#dc3545',
-                                    backgroundColor: 'rgba(220,53,69,0.1)',
-                                    borderWidth: 2,
-                                    tension: 0.3,
-                                    fill: true
-                                }
-                            ]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: {
-                                legend: {
-                                    labels: {
-                                        color: colors.text,
-                                        boxWidth: 12,
-                                        font: {
-                                            size: 11
-                                        }
-                                    }
-                                }
-                            },
-                            scales: {
-                                y: {
-                                    beginAtZero: true,
-                                    grid: {
-                                        color: colors.grid
-                                    },
-                                    ticks: {
-                                        color: colors.muted,
-                                        font: {
-                                            size: 10
-                                        }
-                                    }
-                                },
-                                x: {
-                                    grid: {
-                                        display: false
-                                    },
-                                    ticks: {
-                                        color: colors.muted,
-                                        font: {
-                                            size: 10
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    });
-                    console.log('نمودار با موفقیت ساخته شد.');
-                })
-                .catch(error => {
-                    console.error('Error fetching chart data:', error);
-                });
-        }
-
-        function updateChartColors() {
-            if (financeChart) {
-                const colors = getChartColors();
-                financeChart.options.plugins.legend.labels.color = colors.text;
-                financeChart.options.scales.y.ticks.color = colors.muted;
-                financeChart.options.scales.x.ticks.color = colors.muted;
-                financeChart.options.scales.y.grid.color = colors.grid;
-                financeChart.update();
-            }
-        }
-        
-        // فراخوانی ساخت نمودار
-        document.addEventListener("DOMContentLoaded", createChart);
 
         // ==================== تم ====================
         function setThemeIcons(theme) {
@@ -940,18 +637,153 @@
         if (themeToggleDesktop) themeToggleDesktop.addEventListener('click', toggleTheme);
         if (themeToggleMobile) themeToggleMobile.addEventListener('click', toggleTheme);
 
-        // ==================== تاریخ شمسی ====================
-        const dateElem = document.getElementById('current-date');
-        if (dateElem) {
-            const now = new Date();
-            dateElem.textContent = now.toLocaleDateString('fa-IR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+        // ==================== نمودارها ====================
+                // متغیرهای سراسری برای نمودارها
+        //let trendChart;
+        //let categoryChart;
+
+                function createCharts() {
+            const trendCtx = document.getElementById('trendChartCanvas');
+            const categoryCtx = document.getElementById('categoryChartCanvas');
+
+            if (typeof Chart === 'undefined') {
+                console.warn('Chart.js بارگذاری نشده. نمودارها رسم نمی‌شوند.');
+                return;
+            }
+
+            // اگر هیچکدام از بوم‌ها (Canvas) وجود نداشت، کدی اجرا نشود
+            if (!trendCtx && !categoryCtx) return;
+
+            // دریافت اطلاعات برای هر دو نمودار با یک درخواست
+            fetch('/api/chart-data/')
+                .then(response => response.json())
+                .then(data => {
+                    
+                    // ۱. رسم نمودار روند مالی (داینامیک)
+                    if (trendCtx) {
+                        // پاک کردن نمودار قبلی در صورت وجود
+                        if (trendChart) {
+                            trendChart.destroy();
+                        }
+                        
+                        trendChart = new Chart(trendCtx.getContext('2d'), {
+                            type: 'line', // می‌توانید به 'bar' تغییر دهید
+                            data: {
+                                labels: data.labels,
+                                datasets: [
+                                    {
+                                        label: 'درآمد',
+                                        data: data.incomes,
+                                        backgroundColor: 'rgba(46, 204, 113, 0.2)',
+                                        borderColor: 'rgba(46, 204, 113, 1)',
+                                        borderWidth: 2,
+                                        tension: 0.3
+                                    },
+                                    {
+                                        label: 'هزینه',
+                                        data: data.expenses,
+                                        backgroundColor: 'rgba(231, 76, 60, 0.2)',
+                                        borderColor: 'rgba(231, 76, 60, 1)',
+                                        borderWidth: 2,
+                                        tension: 0.3
+                                    }
+                                ]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                scales: {
+                                    y: {
+                                        beginAtZero: true
+                                    }
+                                }
+                            }
+                        });
+                    }
+
+                    // ۲. رسم نمودار دسته‌بندی هزینه‌ها
+                    if (categoryCtx) {
+                        // دریافت رنگ‌ها در صورت وجود تابع getChartColors
+                        const colors = typeof getChartColors === 'function' ? getChartColors() : { text: '#fff' };
+                        
+                        // پاک کردن نمودار قبلی در صورت وجود
+                        if (categoryChart) {
+                            categoryChart.destroy();
+                        }
+
+                        categoryChart = new Chart(categoryCtx.getContext('2d'), {
+                            type: 'doughnut',
+                            data: {
+                                // استفاده از دیتای دریافت شده از API
+                                labels: data.category_labels,
+                                datasets: [{
+                                    data: data.category_data,
+                                    backgroundColor: [
+                                        '#ff7a00',
+                                        '#dc3545',
+                                        '#2196f3',
+                                        '#28a745',
+                                        '#6c757d'
+                                    ],
+                                    borderWidth: 0,
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                cutout: '70%',
+                                plugins: {
+                                    legend: {
+                                        labels: {
+                                            color: colors.text,
+                                            font: {
+                                                size: 11
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    }
+                    
+                    console.log('نمودارها با موفقیت ساخته شدند.');
+                })
+                .catch(error => {
+                    console.error('خطا در دریافت اطلاعات نمودارها:', error);
+                });
         }
+
+        function updateChartColors() {
+            if (trendChart || categoryChart) {
+                const colors = typeof getChartColors === 'function' ? getChartColors() : null;
+                if (!colors) return;
+                
+                if (trendChart && trendChart.options) {
+                    trendChart.options.plugins.legend.labels.color = colors.text;
+                    trendChart.options.scales.y.ticks.color = colors.muted;
+                    trendChart.options.scales.x.ticks.color = colors.muted;
+                    trendChart.options.scales.y.grid.color = colors.grid;
+                    trendChart.update();
+                }
+                
+                if (categoryChart && categoryChart.options) {
+                    categoryChart.options.plugins.legend.labels.color = colors.text;
+                    categoryChart.update();
+                }
+            }
+        }
+        
+        // فراخوانی تابع ساخت نمودارها (با کمی تاخیر برای اطمینان از لود شدن المان‌ها)
+        setTimeout(createCharts, 50);
 
         // ==================== خروج ====================
         document.getElementById('logoutBtn')?.addEventListener('click', (e) => {
            // e.preventDefault();
             if (confirm('آیا مطمئن هستید که می‌خواهید از حساب کاربری خارج شوید؟')) {
-                window.location.href = ' "{% url 'logout' %}"';
+               // localStorage.removeItem('authToken');
+              //  sessionStorage.removeItem('authToken');
+              //  localStorage.removeItem('theme');
+                window.location.href = '"{% url 'logout' %}"';
             }
         });
 
@@ -986,8 +818,24 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
 
-        // ==================== ساخت نمودار با کمی تأخیر ====================
-        setTimeout(createChart, 50);
+        // ==================== ساخت نمودارها با کمی تأخیر برای اطمینان از اعمال تم ====================
+        setTimeout(createCharts, 50);
+
+        // ==================== تابع Toast ====================
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.style.background = isError ? '#dc3545' : 'var(--primary)';
+            toast.style.display = 'block';
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
+        }
+
+        // ==================== دکمه خروجی گزارش ====================
+        document.querySelector('.btn-orange')?.addEventListener('click', () => {
+            showToast('گزارش با فرمت PDF در حال دانلود است...');
+        });
     </script>
 </body>
 </html>

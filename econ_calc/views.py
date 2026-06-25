@@ -2,8 +2,8 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 import math
 
-@login_required(login_url='/login/')
-def econ_calculator(request):
+
+def calculator_view(request):
     result = None
     if request.method == 'POST':
         try:
